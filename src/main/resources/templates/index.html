@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>学生值日系统</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<div class="container mt-5">
+    <h1 class="text-center">🎓 学生值日管理系统</h1>
+
+    <!-- 随机抽取结果展示 -->
+    <div th:if=" ${luckyStudent}" class="alert alert-success">
+        <strong>今日值日生：</strong> <span th:text=" ${luckyStudent}" class="fw-bold"></span>
+    </div>
+
+    <!-- 添加学生表单 -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <h5>添加新学生</h5>
+            <form th:action="@{/add}" th:object=" ${newStudent}" method="post">
+                <div class="row g-3">
+                    <div class="col-auto">
+                        <input type="text" th:field="*{name}" class="form-control" placeholder="姓名" required>
+                    </div>
+                    <div class="col-auto">
+                        <input type="text" th:field="*{className}" class="form-control" placeholder="班级" required>
+                    </div>
+                    <div class="col-auto">
+                        <button type="submit" class="btn btn-primary">添加</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- 学生列表表格 -->
+    <div class="table-responsive">
+        <table class="table table-striped table-hover">
+            <thead class="table-dark">
+            <tr>
+                <th>ID</th>
+                <th>姓名</th>
+                <th>班级</th>
+                <th>操作</th>
+            </tr>
+            </thead>
+            <tbody>
+            <!-- Thymeleaf 遍历后端传来的 students 列表 -->
+            <tr th:each="student :  ${students}">
+                <td th:text=" ${student.id}">1</td>
+                <td th:text=" ${student.name}">张三</td>
+                <td th:text=" ${student.className}">高三一班</td>
+                <td>
+                    <!-- 删除按钮，携带ID参数 -->
+                    <a th:href="@{'/delete/' +  ${student.id}}"
+                       class="btn btn-danger btn-sm"
+                       onclick="return confirm('确定删除？')">删除</a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- 抽取按钮 -->
+    <div class="text-center mt-4">
+        <a href="/draw" class="btn btn-warning btn-lg">🎲 点击随机抽取今日值日生</a>
+    </div>
+</div>
+</body>
+</html>
