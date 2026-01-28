@@ -17,7 +17,10 @@ public class HolidayManager {
         holidaySet.add(LocalDate.of(2026, 2, 11));
         holidaySet.add(LocalDate.of(2026, 2, 12));
         holidaySet.add(LocalDate.of(2026, 2, 13));
-        holidaySet.add(LocalDate.of(2026, 2, 14));
+
+        holidaySet.add(LocalDate.of(2026, 1, 28));
+        holidaySet.add(LocalDate.of(2026, 1, 29));
+
         // 可以继续添加其他日期...
 
         // 初始化周末 (默认周六周日为休息日)

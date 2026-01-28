@@ -2,6 +2,8 @@ package org.example.demo4.org.example.instance;
 
 import jakarta.persistence.*;
 
+import java.time.LocalDate;
+
 @Entity // 这个注解表示这是一个数据库表
 @Table(name = "t_student")
 public class Student {
@@ -21,7 +23,7 @@ public class Student {
 
 //    @Column(nullable = false)
 //    private String dutyTime; // 值日时间
-
+    private LocalDate dutyDate;
 
     // 无参构造函数 (JPA要求)
     public Student() {}
@@ -30,6 +32,14 @@ public class Student {
     public Student(String name, String className) {
         this.name = name;
         this.className = className;
+    }
+
+    public LocalDate getDutyDate() {
+        return dutyDate;
+    }
+
+    public void setDutyDate(LocalDate dutyDate) {
+        this.dutyDate = dutyDate;
     }
 
     // Getter 和 Setter 方法

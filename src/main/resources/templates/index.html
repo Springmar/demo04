@@ -9,10 +9,8 @@
 <div class="container mt-5">
     <h1 class="text-center">🎓 学生值日管理系统</h1>
 
-    <!-- 随机抽取结果展示 -->
+    <!-- 值日生展示 -->
     <div class="text-center my-4 p-4 bg-light rounded">
-        <h2>今日值日生</h2>
-
         <!-- 情况1：如果今天是休息日 -->
         <div th:if="${isTodayHoliday}">
             <h4 class="text-muted">
@@ -24,14 +22,57 @@
                 (负责 <span th:text="${#temporals.format(dutyDate, 'MM月dd日')}">01月01日</span>)
             </p>
         </div>
-
-        <!-- 情况2：如果今天是工作日 -->
-        <div th:unless="${isTodayHoliday}">
-            <h1 class="display-1 text-primary fw-bold" th:text="${dutyName}">
-                张三
-            </h1>
-        </div>
+            <div th:unless="${isTodayHoliday}">
+                今日值日生是
+                <h1 class="display-1 text-primary fw-bold" th:text="${dutyName}">
+                    张三
+                </h1>
+                <p class="text-success">
+                    下一位值日生：
+                    <span class="fw-bold" th:text="${nextDutyName}">张三</span>
+                    (负责 <span th:text="${#temporals.format(dutyDate, 'MM月dd日')}">01月01日</span>值日)
+                </p>
+            </div>
     </div>
+        <!-- 情况2：如果今天是工作日 -->
+
+
+    <!--值班表展示-->
+<!--        <div class="text-center my-4 p-4 rounded"-->
+<!--             th:classappend=" ${#dates.format(#temporals.toDate(todayDuty.date), 'yyyy-MM-dd')} ==  ${#dates.format(#temporals.toDate(#temporals.now()), 'yyyy-MM-dd')} ? 'bg-primary text-white' : 'bg-light'">-->
+<!--            <h2>今日值日</h2>-->
+<!--            <h1 class="display-1" th:text=" ${todayDuty.name}">张三</h1>-->
+<!--            <p th:text=" ${#temporals.format(#temporals.now(), 'yyyy年MM月dd日 EEEE')}">2024年01月01日 星期一</p>-->
+<!--        </div>-->
+
+        <!-- 排班表 -->
+        <div class="mt-5">
+            <h4>📅 值日排班表 (跳过节假日)</h4>
+            <table class="table table-bordered">
+                <thead class="table-dark">
+                <tr>
+                    <th>日期</th>
+                    <th>星期</th>
+                    <th>状态/值日生</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="item :  ${schedule}">
+                    <!-- 日期列 -->
+                    <td th:text=" ${item.date != null} ?  ${#temporals.format(item.date, 'MM/dd')} : ''">01/01</td>
+
+                    <!-- 星期列 -->
+                    <td th:text=" ${#temporals.dayOfWeekName(item.date)}">星期一</td>
+
+                    <!-- 值日生列：如果是节假日，显示“休息” -->
+                    <td th:classappend=" ${item.workDay} ? '' : 'text-danger font-weight-bold'"
+                        th:text=" ${item.studentName}">
+                        张三
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
     <!-- 添加学生表单 -->
     <div class="card mb-4">
         <div class="card-body">
@@ -61,7 +102,7 @@
         <table class="table table-striped table-hover">
             <thead class="table-dark">
             <tr>
-                <th>序号</th>
+<!--                <th>序号</th>-->
                 <th>姓名</th>
                 <th>班级</th>
                 <th>学号</th>
@@ -71,7 +112,7 @@
             <tbody>
             <!-- Thymeleaf 遍历后端传来的 students 列表 -->
             <tr th:each="student :  ${students}">
-                <td th:text=" ${student.id}">1</td>
+<!--                <td th:text=" ${student.id}">1</td>-->
                 <td th:text=" ${student.name}">张三</td>
                 <td th:text=" ${student.className}">高三一班</td>
                 <td th:text=" ${student.studentID}">112233</td>
