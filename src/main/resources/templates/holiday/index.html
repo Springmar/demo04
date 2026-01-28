@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>节假日管理</title>
+    <style>
+        .calendar {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        .calendar td, .calendar th {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: center;
+            width: 14.2%; /* 100 / 7 */
+        }
+        .other-month { color: #ddd; } /* 非当月日期变灰 */
+        .holiday { background-color: #ffcccc; } /* 节假日标红 */
+        .workday { background-color: #ccffcc; } /* 工作日标绿 */
+        .today { border: 2px solid gold; } /* 今天高亮 */
+    </style>
+</head>
+<body>
+<h1 th:text="|节假日管理 - | + ${currentYear} + '年' + ${currentMonth} + '月'"></h1>
+
+<table class="calendar">
+    <thead>
+    <tr>
+        <th>周日</th><th>周一</th><th>周二</th>
+        <th>周三</th><th>周四</th><th>周五</th><th>周六</th>
+    </tr>
+    </thead>
+    <tbody>
+
+
+    <!-- 遍历周 -->
+    <tr th:each="week : ${calendar}">
+        <!-- 遍历天 -->
+        <td th:each="day : ${week}"
+            th:class="|${day.date == #temporals.createNow().toLocalDate() ? 'today' : ''}
+               ${day.isHoliday ? 'holiday' : 'workday'}
+               ${not day.currentMonth ? 'other-month' : ''}|">
+<!--            <div th:text="${day?.date != null} ? ${#temporals.dayOfMonth(day.date)} : ''">1</div>-->
+            <div th:text="${day?.date} ?: ''">1</div>
+            <!-- 点击切换按钮 -->
+            <button th:if="${day.currentMonth}"
+                    th:attr="data-date=${day.date}"
+                    th:onclick="location.href='/holiday/toggle?date=' + this.getAttribute('data-date')"
+                    style="margin-top: 5px; padding: 2px 5px;">
+                <span th:text="${day.isHoliday} ? '设为工作日' : '设为休息日'">${day.date}}</span>
+            </button>
+        </td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>

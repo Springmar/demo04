@@ -1,49 +1,45 @@
 package org.example.demo4.org.example.util;
 
+import org.example.demo4.org.example.instance.Holiday;
+import org.example.demo4.org.example.interfaces.HolidayRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
+
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
-public class HolidayManager {
 
-    // 使用静态集合存储节假日 (实际项目中可以从数据库查询)
-    private static Set<LocalDate> holidaySet = new HashSet<>();
-    private static Set<LocalDate> weekendSet = new HashSet<>(); // 可配置的周末（如果调休）
+@Service
+public  class HolidayManager {
 
-    static {
-        // 初始化节假日数据 (示例：2024年春节)
-        holidaySet.add(LocalDate.of(2026, 2, 10));
-        holidaySet.add(LocalDate.of(2026, 2, 11));
-        holidaySet.add(LocalDate.of(2026, 2, 12));
-        holidaySet.add(LocalDate.of(2026, 2, 13));
 
-        holidaySet.add(LocalDate.of(2026, 1, 28));
-        holidaySet.add(LocalDate.of(2026, 1, 29));
+    private final HolidayRepository holidayRepository;
 
-        // 可以继续添加其他日期...
 
-        // 初始化周末 (默认周六周日为休息日)
-        // 注意：如果遇到国庆/春节调休，这里需要手动添加工作日
-        // weekendSet.add(LocalDate.of(2024, 2, 4)); // 假设初七上班
+    // 构造器注入
+    public HolidayManager(HolidayRepository holidayRepository) {
+        this.holidayRepository = holidayRepository;
     }
 
     /**
-     * 判断指定日期是否为节假日（包含周末）
+     * 判断某天是否为节假日 (休息日)
+     * true = 休息, false = 工作
      */
-    public static boolean isHoliday(LocalDate date) {
-        // 如果在黑名单里，或者是周六周日（且未被标记为补班），则视为休息日
-        if (holidaySet.contains(date)) {
-            return true;
+    public  boolean isHoliday(LocalDate date) {
+        // 1. 先查数据库有没有自定义设置
+        Optional<Holiday> dbOpt = holidayRepository.findByDate(date);
+        if (dbOpt.isPresent()) {
+            // 如果数据库里有记录，以数据库为准
+            // type=1 是节假日(休息), type=0 是工作日
+            return dbOpt.get().getType() == 1;
         }
 
-        // 检查是否为周六或周日
+        // 2. 如果数据库里没有记录，按默认规则：周六周日休息
         DayOfWeek dayOfWeek = date.getDayOfWeek();
-        if ((dayOfWeek == DayOfWeek.SATURDAY || dayOfWeek == DayOfWeek.SUNDAY)) {
-            // 如果是周末，但被标记为补班（在weekendSet里），则不算休息日
-            return !weekendSet.contains(date);
-        }
-
-        return false;
+        return dayOfWeek == DayOfWeek.SATURDAY || dayOfWeek == DayOfWeek.SUNDAY;
     }
 }

@@ -23,6 +23,9 @@ public class DutyController {
     @Autowired
     private StudentRepository studentRepository;
 
+    @Autowired
+    private HolidayManager holidayManager;
+
     // 首页：查询所有学生并返回到页面
 //    @GetMapping("/")
 //    public String index(Model model) {
@@ -66,7 +69,7 @@ public class DutyController {
         LocalDate today = LocalDate.now();
         int workDayIndex = 0;
         //值班表
-        if(HolidayManager.isHoliday(today)){
+        if(holidayManager.isHoliday(today)){
              workDayIndex = 1;
         }else {
              workDayIndex = 0;
@@ -81,7 +84,7 @@ public class DutyController {
         int count = 0;
         // 循环直到找到今天
         while (!cursor.isAfter(today)) {
-            if (!HolidayManager.isHoliday(cursor)) {
+            if (!holidayManager.isHoliday(cursor)) {
                 // 只有是工作日才计数
                 workDayIndex++;
             }
@@ -93,7 +96,7 @@ public class DutyController {
         Student todayDuty = allStudents.get(studentIndex);
 
         while (count < 10) { // 生成10个排班记录
-            if (!HolidayManager.isHoliday(cursor)) {
+            if (!holidayManager.isHoliday(cursor)) {
                 // 如果是工作日，分配值日生
                 int idx = (workDayIndex + count) % allStudents.size();
                 Student student = allStudents.get(idx);
@@ -127,7 +130,7 @@ public class DutyController {
         //当日值日生
         String dutyName = "暂无人员";
         String nextDutyName = "无";
-        boolean isTodayHoliday = HolidayManager.isHoliday(today);
+        boolean isTodayHoliday = holidayManager.isHoliday(today);
         LocalDate dutyDate = today;
         if (!allStudents.isEmpty()) {
             // 从今天开始倒推，找到最近的一个非节假日
@@ -141,7 +144,7 @@ public class DutyController {
 
                 // 找到下一个工作日
                 LocalDate nextWorkDay = today.plusDays(1);
-                while (HolidayManager.isHoliday(nextWorkDay)) {
+                while (holidayManager.isHoliday(nextWorkDay)) {
                     nextWorkDay = nextWorkDay.plusDays(1);
                 }
 
@@ -157,13 +160,17 @@ public class DutyController {
                 // 情况B：今天是工作日
                 // 直接计算今天的值日生
                 LocalDate nextWorkDay = today.plusDays(1);
-                while (HolidayManager.isHoliday(nextWorkDay)) {
+                while (holidayManager.isHoliday(nextWorkDay)) {
                     nextWorkDay = nextWorkDay.plusDays(1);
                 }
                 long days = today.toEpochDay();
                 int index = (int) (days % allStudents.size());
                 dutyName = allStudents.get(index).getName();
-                nextDutyName = allStudents.get(index + 1).getName();
+                if (allStudents.size() > 1) {
+                    // 使用取模运算实现循环：最后一个人的下一位是第一个人
+                    int nextIndex = (index + 1) % allStudents.size();
+                    nextDutyName = allStudents.get(nextIndex).getName();
+                }
                 dutyDate = nextWorkDay;
                 // dutyDate 就是 today
             }
