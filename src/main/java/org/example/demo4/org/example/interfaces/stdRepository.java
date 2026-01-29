@@ -6,10 +6,8 @@ import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 
-// Spring Data JPA 会自动实现这个接口，无需写 SQL
-public interface StudentRepository extends JpaRepository<Student, Long> {
+public interface stdRepository extends JpaRepository<Student, Long> {
 
-    @Query("SELECT s FROM Student s ORDER BY s.lastDutyDate ASC, s.createTime ASC")
+    @Query("SELECT s FROM Student s ORDER BY s.lastDutyDate ASC")
     List<Student> findAllByOrderByLastDutyDateAsc();
-
 }

@@ -19,10 +19,46 @@
         .holiday { background-color: #ffcccc; } /* 节假日标红 */
         .workday { background-color: #ccffcc; } /* 工作日标绿 */
         .today { border: 2px solid gold; } /* 今天高亮 */
+
+        /* 导航区域样式 */
+        .navigation {
+            text-align: center;
+            margin: 20px 0;
+            font-size: 18px;
+        }
+
+        /* 下拉框和按钮的样式 */
+        select, button {
+            padding: 5px 10px;
+            margin: 0 5px;
+            font-size: 16px;
+        }
     </style>
 </head>
 <body>
 <h1 th:text="|节假日管理 - | + ${currentYear} + '年' + ${currentMonth} + '月'" style="text-align: center;"></h1>
+
+<div class="navigation">
+
+    <!-- 下拉选择器 -->
+    <select id="yearSelect" onchange="jumpToDate()">
+        <!-- 生成最近10年和未来10年的选项 -->
+        <option th:each="y : ${#numbers.sequence(currentYear - 10, currentYear + 10)}"
+                th:value="${y}"
+                th:text="${y} + '年'"
+                th:selected="${y == currentYear}">
+        </option>
+    </select>
+
+    <select id="monthSelect" onchange="jumpToDate()">
+        <option th:each="m : ${#numbers.sequence(1, 12)}"
+                th:value="${m}"
+                th:text="${m} + '月'"
+                th:selected="${m == currentMonth}">
+        </option>
+    </select>
+
+</div>
 
 <table class="calendar">
     <thead>
@@ -55,6 +91,24 @@
     </tbody>
 </table>
 
-<a class="nav-link" th:href="@{/}">返回首页</a>
+<div style="text-align: center; margin-top: 30px;">
+    <a th:href="@{/}" style="text-decoration: none; color: #007bff;">返回首页</a>
+</div>
+
+<script>
+    function jumpToDate() {
+        // 获取用户选择的年份和月份
+        var year = document.getElementById('yearSelect').value;
+        var month = document.getElementById('monthSelect').value;
+
+        // 构建跳转 URL (这里假设你的访问路径是 /holiday/view)
+        // 注意：URL 中的参数名 (year, month) 需要与后端接收的参数名一致
+        var url = '/holiday/view?year=' + year + '&month=' + month;
+
+        // 执行跳转
+        window.location.href = url;
+    }
+</script>
+
 </body>
 </html>

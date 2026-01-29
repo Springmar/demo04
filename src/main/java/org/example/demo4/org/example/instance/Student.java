@@ -3,6 +3,7 @@ package org.example.demo4.org.example.instance;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity // 这个注解表示这是一个数据库表
 @Table(name = "t_student")
@@ -14,11 +15,25 @@ public class Student {
     @Column(nullable = false)
     private String name;
 
+    public LocalDateTime getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(LocalDateTime createTime) {
+        this.createTime = createTime;
+    }
+
+    @Column(name = "create_time", updatable = false)
+    private LocalDateTime createTime;
+
     @Column(nullable = false)
     private String className; // 班级
 
     @Column(nullable = false)
     private String studentID; // 学号
+
+    @Column(name = "last_duty_date")
+    private LocalDate lastDutyDate;//最后值日时间
 
 
 //    @Column(nullable = false)
@@ -40,6 +55,14 @@ public class Student {
 
     public void setDutyDate(LocalDate dutyDate) {
         this.dutyDate = dutyDate;
+    }
+
+    public LocalDate getLastDutyDate() {
+        return lastDutyDate;
+    }
+
+    public void setLastDutyDate(LocalDate lastDutyDate) {
+        this.lastDutyDate = lastDutyDate;
     }
 
     // Getter 和 Setter 方法

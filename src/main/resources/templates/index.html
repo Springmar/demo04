@@ -4,11 +4,16 @@
     <meta charset="UTF-8">
     <title>学生值日系统</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <a class="nav-link" th:href="@{/holiday}">节假日设置</a>
+
 </head>
 <body>
 <div class="container mt-5">
     <h1 class="text-center">🎓 学生值日管理系统</h1>
+    <div style="text-align: center; margin-top: 30px;">
+        <button>
+            <a class="nav-link" th:href="@{/holiday}" style="text-decoration: none; color: #007bff;">节假日设置</a>
+        </button>
+    </div>
 
     <!-- 值日生展示 -->
     <div class="text-center my-4 p-4 bg-light rounded">

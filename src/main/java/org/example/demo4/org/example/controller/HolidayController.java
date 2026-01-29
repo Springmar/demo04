@@ -54,6 +54,23 @@ public class HolidayController {
         return "holiday/index"; // 对应 templates/holiday/index.html
     }
 
+    //渲染月份
+    @GetMapping("/holiday/view")
+    public String holidayNextView(Model model,
+                                  // 👇 接收前端传来的页码参数，默认第0页（第一页）
+                                  @RequestParam(value = "year", required = false) int year,
+                                  // 👇 接收每页数量，默认5条
+                                  @RequestParam(value = "month", required = false) int month) {
+
+        // 生成日历数据
+        List<List<CalendarDay>> calendar = buildCalendar(year, month);
+
+        model.addAttribute("calendar", calendar);
+        model.addAttribute("currentYear", year);
+        model.addAttribute("currentMonth", month);
+        return "holiday/index"; // 对应 templates/holiday/index.html
+    }
+
     /**
      * 构建日历矩阵的核心逻辑
      */
@@ -140,6 +157,10 @@ public class HolidayController {
     @GetMapping("/holiday/toggle")
     public String toggleHolidayStatus(@RequestParam("date") String dateStr,
                                       RedirectAttributes redirectAttrs) {
+
+        LocalDate dateRes = LocalDate.parse(dateStr);
+        String yearStr = dateRes.getYear() + "";
+        String monthStr = dateRes.getMonthValue() + "";
         try {
 
 
@@ -167,7 +188,7 @@ public class HolidayController {
         }
 
         // 重定向回日历页面
-        return "redirect:/holiday";
+        return "redirect:/holiday/view?year="+yearStr+"&month="+monthStr;
     }
 
 
