@@ -32,10 +32,10 @@ public  class HolidayManager {
     public  boolean isHoliday(LocalDate date) {
         // 1. 先查数据库有没有自定义设置
         Optional<Holiday> dbOpt = holidayRepository.findByDate(date);
-        if (dbOpt.isPresent()) {
+        if (dbOpt.isPresent() && dbOpt.get().getType() != null) {
             // 如果数据库里有记录，以数据库为准
             // type=1 是节假日(休息), type=0 是工作日
-            return dbOpt.get().getType() == 1;
+                return dbOpt.get().getType() == 1;
         }
 
         // 2. 如果数据库里没有记录，按默认规则：周六周日休息

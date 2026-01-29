@@ -21,7 +21,7 @@ public class Holiday {
     // 备注 (例如: 春节调休)
     private String remark;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private Integer type;
 
     // 日期 (唯一索引，避免重复)
@@ -32,11 +32,13 @@ public class Holiday {
         return type;
     }
 
+
+    // 类型: 0=工作日, 1=节假日
     public void setType(Integer type) {
         this.type = type;
     }
 
-    // 类型: 0=工作日, 1=节假日
+
 
 
 

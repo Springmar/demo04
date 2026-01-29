@@ -89,6 +89,10 @@ public class HolidayController {
         // --- 2. 填充当月日期 ---
         for (int day = 1; day <= lastDay.getDayOfMonth(); day++) {
             LocalDate date = LocalDate.of(year, month, day);
+
+            if(date != null) {
+
+            }
             boolean isHoliday = holidayManager.isHoliday(date);
 
             // 如果当前周满了，开启新的一周
@@ -137,12 +141,17 @@ public class HolidayController {
     public String toggleHolidayStatus(@RequestParam("date") String dateStr,
                                       RedirectAttributes redirectAttrs) {
         try {
+
+
             // 解析日期
             LocalDate date = LocalDate.parse(dateStr);
             logger.info("接收到日期状态切换请求: {}", date);
 
+            //判断是否为节假日
+            boolean isHoliday = holidayManager.isHoliday(date);
+
             // 调用服务层方法切换日期状态
-            boolean isHoliday = holidayService.toggleHolidayStatus(date);
+            boolean isHoliday1 = holidayService.toggleHolidayStatus(date,isHoliday);
 
             // 添加成功消息
             String message = isHoliday ? "✅ 已成功设置为休息日" : "✅ 已成功设置为工作日";
@@ -158,7 +167,7 @@ public class HolidayController {
         }
 
         // 重定向回日历页面
-        return "redirect:/calendar";
+        return "redirect:/holiday";
     }
 
 

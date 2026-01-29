@@ -19,19 +19,42 @@ public class HolidayService {
      * @param date 日期
      * @return true表示设置为休息日，false表示设置为工作日
      */
-    public boolean toggleHolidayStatus(LocalDate date) {
+    public boolean toggleHolidayStatus(LocalDate date,Boolean isHoliday) {
         // 检查日期是否已存在
         Optional<Holiday> optionalHoliday = holidayRepository.findByDate(date);
 
-        if (optionalHoliday.isPresent()) {
+        if (isHoliday) {
             // 日期已存在，删除（设置为工作日）
-            holidayRepository.delete(optionalHoliday.get());
+
+            if(optionalHoliday.isEmpty()) {
+                Holiday holiday = new Holiday();
+                holiday.setDate(date);
+                holiday.setType(0);
+                holidayRepository.save(holiday);
+            }else{
+                holidayRepository.delete(optionalHoliday.get());
+                Holiday holiday = new Holiday();
+                holiday.setDate(date);
+                holiday.setType(0);
+                holidayRepository.save(holiday);
+            }
+
             return false; // 表示设置为工作日
         } else {
             // 日期不存在，创建（设置为休息日）
-            Holiday holiday = new Holiday();
-            holiday.setDate(date);
-            holidayRepository.save(holiday);
+            if(optionalHoliday.isEmpty()) {
+                Holiday holiday = new Holiday();
+                holiday.setDate(date);
+                holiday.setType(1);
+                holidayRepository.save(holiday);
+            }else{
+                holidayRepository.delete(optionalHoliday.get());
+                Holiday holiday = new Holiday();
+                holiday.setDate(date);
+                holiday.setType(1);
+                holidayRepository.save(holiday);
+            }
+
             return true; // 表示设置为休息日
         }
     }
