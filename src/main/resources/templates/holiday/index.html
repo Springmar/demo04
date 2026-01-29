@@ -22,7 +22,7 @@
     </style>
 </head>
 <body>
-<h1 th:text="|节假日管理 - | + ${currentYear} + '年' + ${currentMonth} + '月'"></h1>
+<h1 th:text="|节假日管理 - | + ${currentYear} + '年' + ${currentMonth} + '月'" style="text-align: center;"></h1>
 
 <table class="calendar">
     <thead>
@@ -54,5 +54,7 @@
     </tr>
     </tbody>
 </table>
+
+<a class="nav-link" th:href="@{/}">返回首页</a>
 </body>
 </html>

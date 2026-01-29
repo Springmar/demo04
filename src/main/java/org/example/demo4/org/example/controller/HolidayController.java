@@ -40,7 +40,7 @@ public class HolidayController {
     private HolidayService holidayService;
 
     @Autowired
-    private HolidayManager holidayManager; // 假设你有这个服务
+    private HolidayManager holidayManager;
 
     @GetMapping("/holiday")
     public String holidayView(Model model) {
