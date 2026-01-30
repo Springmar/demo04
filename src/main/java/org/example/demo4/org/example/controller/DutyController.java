@@ -187,12 +187,13 @@ public class DutyController {
 
 
         DutyScheduleDTO items = dutyService.generateDutySchedule();
-
+        LocalDate today = LocalDate.now();
         String dutyName = items.getDutyName();
         List<DutyScheduleItem> schedule = items.getSchedule();
         String nextDutyName = items.getNextDutyName();
         LocalDate dutyDate = items.getNextDutyDate();
-        boolean isTodayHoliday = items.isTodayHoliday();
+//        boolean isTodayHoliday = items.isTodayHoliday();
+        boolean isTodayHoliday = holidayManager.isHoliday(today);
 
 
 
