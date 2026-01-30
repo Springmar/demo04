@@ -48,9 +48,10 @@ public class DutyService {
 
         // 如果今天是休息日，我们需要找下一个工作日
         if (holidayManager.isHoliday(today)) {
+            int loop = 0;
             LocalDate nextWorkDay = findNextWorkDay(today);
             // 获取那天的值日生
-            currentDutyStudent = assignStudentForDate(nextWorkDay, students);
+            currentDutyStudent = assignStudentForDate(loop, students);
             dutyDate = nextWorkDay;
         } else {
             // 今天是工作日，直接取队列第一个
@@ -78,10 +79,17 @@ public class DutyService {
         List<DutyScheduleItem> schedule = new ArrayList<>();
         LocalDate cursor = today;
         int count = 0;
-
+        int loop = 0;
         while (count < 10) {
+
+            Student student = assignStudentForDate(loop, students);
             if (!holidayManager.isHoliday(cursor)) {
-                Student student = assignStudentForDate(cursor, students);
+                if(loop <students.size()-1) {
+                    loop++;
+                }else {
+                    loop = 0;
+                }
+
                 DutyScheduleItem item = new DutyScheduleItem();
                 item.setDate(cursor);
                 item.setStudentName(student.getName());
@@ -117,11 +125,11 @@ public class DutyService {
         // 👇 关键步骤：更新数据库 (标记该学生已值班)
         // 这一步必须放在最后，确保页面展示完再更新
         // =================================================
-        if (currentDutyStudent != null) {
-            currentDutyStudent.setLastDutyDate(dutyDate);
-            // 注意：由于 @Transactional，这里不需要显式 save，但显式调用更清晰
-            stdRepository.save(currentDutyStudent);
-        }
+//        if (currentDutyStudent != null) {
+//            currentDutyStudent.setLastDutyDate(dutyDate);
+//            // 注意：由于 @Transactional，这里不需要显式 save，但显式调用更清晰
+//            stdRepository.save(currentDutyStudent);
+//        }
 
         return result;
     }
@@ -139,9 +147,10 @@ public class DutyService {
     // 传入日期和已排序的学生列表
     // 逻辑：返回列表中第一个 lastDutyDate <= cursor 的学生
     // 这里简化处理：直接取列表第一个（因为我们查出来就是按这个排的）
-    private Student assignStudentForDate(LocalDate date, List<Student> sortedStudents) {
+    private Student assignStudentForDate(int loop, List<Student> sortedStudents) {
         // 因为我们传入的 sortedStudents 已经是按 lastDutyDate 升序排好的
         // 所以直接取第一个即可
-        return sortedStudents.get(0);
+
+        return sortedStudents.get(loop);
     }
 }

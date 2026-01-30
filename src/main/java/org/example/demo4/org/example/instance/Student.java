@@ -1,6 +1,7 @@
 package org.example.demo4.org.example.instance;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -24,6 +25,7 @@ public class Student {
     }
 
     @Column(name = "create_time", updatable = false)
+    @CreationTimestamp
     private LocalDateTime createTime;
 
     @Column(nullable = false)
